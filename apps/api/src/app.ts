@@ -6,9 +6,12 @@ import compression from "compression";
 import morgan from "morgan";
 import { appRouter } from "./routers";
 import { createContext } from "./lib/trpc";
+import connectDB from "./config/db/connectDB";
 
 const createApp = (): Application => {
   const app = express();
+
+  connectDB();
 
   app.use(cors());
   app.use(cookieParser());
