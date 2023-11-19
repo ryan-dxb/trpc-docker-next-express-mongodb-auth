@@ -19,6 +19,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 import { trpc } from "@/trpc";
+import { useToast } from "@/components/ui/use-toast";
 
 interface RegisterFormProps {}
 
@@ -44,13 +45,27 @@ const registerFormSchema = z
 
 const RegisterForm: NextPage<RegisterFormProps> = () => {
   const router = useRouter();
+  const { toast } = useToast();
 
   const { mutate } = trpc.auth.registerUser.useMutation({
     onError: (error) => {
-      console.error(error);
+      toast({
+        title: "Error",
+        description: error?.message,
+        variant: "destructive",
+        duration: 2000,
+      });
     },
     onSuccess: () => {
-      console.log("User registered");
+      toast({
+        title: "Success",
+        description: "Account created successfully",
+        className: "bg-green-500",
+        duration: 2000,
+      });
+      setTimeout(() => {
+        router.push("/auth/login");
+      }, 2000);
     },
   });
 
@@ -94,26 +109,6 @@ const RegisterForm: NextPage<RegisterFormProps> = () => {
       password: password,
       confirmPassword: passwordConfirmation,
     });
-    //   if (response) {
-    //     toast({
-    //       title: "Success",
-    //       description: response?.message,
-    //       className: "bg-green-500",
-    //     });
-    //   }
-    //   if (isSuccess) {
-    //     setTimeout(() => {
-    //       router.push("/auth/login");
-    //     }, 2000);
-    //   }
-    // } catch (error: any) {
-    //   console.log("error", error);
-    //   toast({
-    //     title: "Error",
-    //     description: error?.message,
-    //     variant: "destructive",
-    //   });
-    // }
   }
 
   const onErrors = (errors: any) => {

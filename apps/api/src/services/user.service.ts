@@ -1,16 +1,21 @@
 import UserModel, { UserDocument } from "@/models/user.model";
 import { RegisterUserInput } from "@/schema/auth.schema";
+import { User } from "@/types";
 import { omit } from "lodash";
 
-const excludeFields = ["-password -__v"];
+export const excludeFields = ["password", "__v", "createdAt", "updatedAt"];
 
 export const findUserByEmail = async (email: string) => {
-  return await UserModel.findOne({ email: email.toLowerCase() });
+  const user = await UserModel.findOne({ email: email.toLowerCase() });
+
+  if (!user) {
+    return null;
+  }
+
+  return user as User;
 };
 
-export const createNewUser = async (
-  input: RegisterUserInput
-): Promise<Partial<UserDocument>> => {
+export const createNewUser = async (input: RegisterUserInput) => {
   const { name, email, password } = input;
 
   const user = await UserModel.create({
@@ -19,5 +24,5 @@ export const createNewUser = async (
     password,
   });
 
-  return omit(user.toJSON(), excludeFields);
+  return user as User;
 };

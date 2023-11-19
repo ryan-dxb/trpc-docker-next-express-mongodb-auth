@@ -20,5 +20,13 @@ export const registerUserSchema = zod
     path: ["confirmPassword"],
   });
 
+export const loginUserSchema = zod.object({
+  email: zod
+    .string({ required_error: "Email is required" })
+    .email({ message: "Invalid email" }),
+  password: zod.string({ required_error: "Password is required" }),
+});
+
 // Types of the above schema
 export type RegisterUserInput = zod.infer<typeof registerUserSchema>;
+export type LoginUserInput = zod.infer<typeof loginUserSchema>;
