@@ -10,9 +10,6 @@ const corsOptions: CorsOptions = {
     }
   },
   credentials: true,
-  exposedHeaders: ["set-cookie"],
-  preflightContinue: true,
-  optionsSuccessStatus: 200,
 };
 
 export default corsOptions;

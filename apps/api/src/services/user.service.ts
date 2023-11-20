@@ -12,7 +12,17 @@ export const findUserByEmail = async (email: string) => {
     return null;
   }
 
-  return user as User;
+  return user as UserDocument;
+};
+
+export const findUserById = async (id: string) => {
+  const user = await UserModel.findById(id);
+
+  if (!user) {
+    return null;
+  }
+
+  return user as UserDocument;
 };
 
 export const createNewUser = async (input: RegisterUserInput) => {
@@ -24,5 +34,5 @@ export const createNewUser = async (input: RegisterUserInput) => {
     password,
   });
 
-  return user as User;
+  return user as UserDocument;
 };

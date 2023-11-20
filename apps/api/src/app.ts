@@ -7,13 +7,14 @@ import morgan from "morgan";
 import { appRouter } from "./routers";
 import { createContext } from "./lib/trpc";
 import connectDB from "./config/db/connectDB";
+import corsOptions from "./config/cors/corsOptions";
 
 const createApp = (): Application => {
   const app = express();
 
   connectDB();
 
-  app.use(cors());
+  app.use(cors(corsOptions));
   app.use(cookieParser());
   app.use(compression());
   app.use(morgan("dev"));

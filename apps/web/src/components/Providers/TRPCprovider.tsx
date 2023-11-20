@@ -13,6 +13,12 @@ const TRPCprovider = ({ children }: PropsWithChildren) => {
       links: [
         httpBatchLink({
           url: "http://localhost:8000/trpc",
+          fetch(url, options) {
+            return fetch(url, {
+              credentials: "include",
+              ...options,
+            });
+          },
         }),
       ],
     })
