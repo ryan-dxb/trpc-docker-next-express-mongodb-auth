@@ -25,6 +25,22 @@ export const findUserById = async (id: string) => {
   return user as UserDocument;
 };
 
+export const findUserByRefreshToken = async (
+  id: string,
+  refreshToken: string
+) => {
+  const user = await UserModel.findOne({
+    _id: id,
+    refreshTokens: refreshToken,
+  });
+
+  if (!user) {
+    return null;
+  }
+
+  return user as UserDocument;
+};
+
 export const createNewUser = async (input: RegisterUserInput) => {
   const { name, email, password } = input;
 

@@ -1,15 +1,17 @@
 import jwt, { SignOptions } from "jsonwebtoken";
 
+export type DecodedToken = {
+  id: string;
+  iat: number;
+  exp: number;
+};
+
 export const signJWT = (
   payload: Object,
   key: "ACCESS_JWT_SECRET" | "REFRESH_JWT_SECRET",
   options: SignOptions = {}
 ) => {
-  // const privateKey = Buffer.from(process.env[key]!, "base64").toString("utf-8");
-
   const privateKey = process.env[key]! as string;
-
-  console.log("privateKey", privateKey);
 
   return jwt.sign(payload, privateKey, {
     ...(options && options),
@@ -17,20 +19,18 @@ export const signJWT = (
   });
 };
 
-export const verifyJWT = <T>(
+export const verifyJWT = (
   token: string,
   key: "ACCESS_JWT_SECRET" | "REFRESH_JWT_SECRET"
-): T | null => {
+): DecodedToken | null => {
   try {
-    const publicKey = Buffer.from(process.env[key]!, "base64").toString(
-      "ascii"
-    );
+    const publicKey = process.env[key]! as string;
 
     const decoded = jwt.verify(token, publicKey, {
       algorithms: ["HS256"],
     });
 
-    return decoded as T;
+    return decoded as DecodedToken;
   } catch (error) {
     console.log(error);
     return null;

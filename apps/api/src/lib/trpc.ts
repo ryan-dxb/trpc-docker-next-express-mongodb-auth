@@ -26,7 +26,12 @@ const isAuthenicated = trpc.middleware(({ ctx, next }) => {
     });
   }
 
-  return next();
+  return next({
+    ctx: {
+      ...ctx,
+      user: ctx.user,
+    },
+  });
 });
 
 export const privateProcedure = trpc.procedure.use(isAuthenicated);

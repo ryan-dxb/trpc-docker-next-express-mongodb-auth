@@ -11,6 +11,7 @@ export interface UserInput {
   email: string;
   password: string;
   role: UserRole;
+  refreshTokens: string[];
 }
 
 export interface UserDocument extends UserInput, mongoose.Document {
@@ -36,6 +37,7 @@ const UserSchema = new mongoose.Schema<UserDocument>(
       enum: Object.values(UserRole),
       default: UserRole.USER,
     },
+    refreshTokens: [{ type: String, default: [] }],
   },
   {
     timestamps: true,
@@ -43,6 +45,7 @@ const UserSchema = new mongoose.Schema<UserDocument>(
       transform(doc, ret, options) {
         delete ret.password;
         delete ret.__v;
+        delete ret.refreshTokens;
         ret.id = ret._id;
         delete ret._id;
         return ret;

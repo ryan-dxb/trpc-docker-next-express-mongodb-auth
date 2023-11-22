@@ -14,7 +14,10 @@ const loginUserController = async ({
   ctx: Context;
 }) => {
   try {
+    const refreshTokenFromCookies: string = ctx.req.cookies.refreshToken;
     const { email, password } = input;
+
+    console.log(ctx.req.headers.authorization);
 
     // Check if user exists
     const userExists = await findUserByEmail(email);
@@ -39,7 +42,31 @@ const loginUserController = async ({
     // Generate Tokens
     const { accessToken, refreshToken } = await generateTokens(userExists);
 
-    console.log("accessToken", accessToken);
+    // Refresh Token with reuse prevention
+    let newRefreshTokenArray: string[] = [];
+
+    // Check if user has refresh token from cookies
+    if (refreshTokenFromCookies) {
+      // Filter out the refresh token from cookies that is equal to the refresh token from database
+      newRefreshTokenArray = userExists.refreshTokens.filter(
+        (token) => token !== refreshTokenFromCookies
+      );
+
+      // Push the new refresh token to the array
+      newRefreshTokenArray.push(refreshToken);
+    } else {
+      newRefreshTokenArray = [...userExists.refreshTokens, refreshToken];
+    }
+
+    // Only allow 10 refresh tokens per user
+    if (newRefreshTokenArray.length > 10) {
+      newRefreshTokenArray.shift();
+    }
+
+    // Update refresh tokens
+    userExists.refreshTokens = newRefreshTokenArray;
+
+    await userExists.save();
 
     // Send Tokens in cookies
     ctx.res.cookie("accessToken", accessToken, {
@@ -50,11 +77,6 @@ const loginUserController = async ({
 
     ctx.res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-    });
-
-    ctx.res.cookie("isLoggedIn", true, {
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
     });

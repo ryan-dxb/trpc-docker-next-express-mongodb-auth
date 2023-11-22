@@ -10,7 +10,6 @@ export const isAuthMiddleware = async ({
 }: trpcExpress.CreateExpressContextOptions) => {
   try {
     let accessToken;
-
     // Check if authorization header is present
     if (
       req.headers.authorization &&
@@ -29,23 +28,24 @@ export const isAuthMiddleware = async ({
       user: null,
     };
 
+    console.log("accessToken", accessToken);
+
     // If access token is not present, return null
     if (!accessToken) {
       return notAuthenticatedResponse;
     }
 
     // Verify access token
-    const decoded = verifyJWT<{ email: string }>(
-      ACCESS_JWT_SECRET,
-      "ACCESS_JWT_SECRET"
-    );
+    const decoded = verifyJWT(accessToken, "ACCESS_JWT_SECRET");
 
     if (!decoded) {
       return notAuthenticatedResponse;
     }
 
+    console.log("decoded", decoded);
+
     // If access token is valid, return user
-    const user = await findUserByEmail(decoded.email);
+    const user = await findUserById(decoded.id);
 
     if (!user) {
       return notAuthenticatedResponse;

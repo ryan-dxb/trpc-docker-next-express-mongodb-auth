@@ -15,9 +15,15 @@ const TRPCprovider = ({ children }: PropsWithChildren) => {
           url: "http://localhost:8000/trpc",
           fetch(url, options) {
             return fetch(url, {
-              credentials: "include",
               ...options,
+              credentials: "include",
             });
+          },
+
+          async headers() {
+            return {
+              authorization: "abcd",
+            };
           },
         }),
       ],
@@ -28,7 +34,7 @@ const TRPCprovider = ({ children }: PropsWithChildren) => {
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         {children}
-        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </trpc.Provider>
   );

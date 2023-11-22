@@ -55,7 +55,7 @@ const LoginForm: NextPage<LoginFormProps> = () => {
     reValidateMode: "onBlur",
     defaultValues: {
       email: "test@test.com",
-      password: "test123",
+      password: "123456",
     },
   });
 
