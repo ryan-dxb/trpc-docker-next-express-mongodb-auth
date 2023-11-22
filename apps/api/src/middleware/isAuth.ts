@@ -28,8 +28,6 @@ export const isAuthMiddleware = async ({
       user: null,
     };
 
-    console.log("accessToken", accessToken);
-
     // If access token is not present, return null
     if (!accessToken) {
       return notAuthenticatedResponse;
@@ -41,8 +39,6 @@ export const isAuthMiddleware = async ({
     if (!decoded) {
       return notAuthenticatedResponse;
     }
-
-    console.log("decoded", decoded);
 
     // If access token is valid, return user
     const user = await findUserById(decoded.id);

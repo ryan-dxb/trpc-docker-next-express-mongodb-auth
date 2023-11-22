@@ -10,12 +10,12 @@ export const generateTokens = async (user: UserDocument) => {
 
   // Generate access token
   const accessToken = signJWT({ id: userId }, "ACCESS_JWT_SECRET", {
-    expiresIn: "15m",
+    expiresIn: "1m",
   });
 
   // Generate refresh token
   const refreshToken = signJWT({ id: userId }, "REFRESH_JWT_SECRET", {
-    expiresIn: "7d",
+    expiresIn: "15m",
   });
 
   return { accessToken, refreshToken };

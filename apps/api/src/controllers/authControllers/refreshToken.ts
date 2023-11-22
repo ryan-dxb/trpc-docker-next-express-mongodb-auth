@@ -1,5 +1,6 @@
 import { verifyJWT } from "@/helpers/jwt";
 import { Context } from "@/lib/trpc";
+import { RefreshTokenInput } from "@/schema/auth.schema";
 import {
   generateTokens,
   refreshTokenReuseDetection,
@@ -8,9 +9,15 @@ import {
 import { findUserById } from "@/services/user.service";
 import { TRPCError } from "@trpc/server";
 
-const refreshTokenController = async ({ ctx }: { ctx: Context }) => {
+const refreshTokenController = async ({
+  input,
+  ctx,
+}: {
+  input: RefreshTokenInput;
+  ctx: Context;
+}) => {
   try {
-    const refreshTokenFromCookies: string = ctx.req.cookies.refreshToken;
+    const refreshTokenFromCookies: string = input.refreshToken;
 
     const errorMessage =
       "Something went wrong. Could not refresh token. Please login again.";
@@ -83,13 +90,10 @@ const refreshTokenController = async ({ ctx }: { ctx: Context }) => {
       secure: process.env.NODE_ENV === "production",
     });
 
-    ctx.res.cookie("isLoggedIn", true, {
-      sameSite: "lax",
-      secure: process.env.NODE_ENV === "production",
-    });
-
     return {
       status: "Token Refreshed Successfully",
+      accessToken,
+      refreshToken,
     };
   } catch (error) {
     throw error;

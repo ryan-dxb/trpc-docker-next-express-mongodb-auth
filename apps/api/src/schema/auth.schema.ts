@@ -27,6 +27,11 @@ export const loginUserSchema = zod.object({
   password: zod.string({ required_error: "Password is required" }),
 });
 
+export const refreshTokenSchema = zod.object({
+  refreshToken: zod.string({ required_error: "Refresh token is required" }),
+});
+
 // Types of the above schema
 export type RegisterUserInput = zod.infer<typeof registerUserSchema>;
 export type LoginUserInput = zod.infer<typeof loginUserSchema>;
+export type RefreshTokenInput = zod.infer<typeof refreshTokenSchema>;
